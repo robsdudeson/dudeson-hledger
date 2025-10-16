@@ -1,13 +1,29 @@
 #!/bin/bash
-# simplefinjson 1.1 - (c) Simon Michael 2025
-# simplefinjson [ACCTID]
-#  download the last 30 days' transaction history of one or all accounts from SimpleFIN, and print as tidy JSON.
+# simplefinjson 1.3 - (c) Simon Michael 2025
+# simplefinjson [OPTIONS] [ACCTID]
+#  download transaction history from SimpleFIN and print as tidy JSON.
 #
 # Requirements:
 #  a SimpleFIN account with financial institution(s) and app connection configured
 #  curl
 #  GNU date
 #  jq to prettify
+#
+# Options:
+#  --transactions       Include transactions from last 30 days (shortcut for --start-date 30)
+#  --start-date DAYS    Number of days to look back
+#  --end-date TIMESTAMP Unix epoch timestamp for end date
+#  --pending            Include pending transactions
+#  --balances-only      Return only balances, no transactions
+#  --account ACCTID     Specific account ID (can be specified multiple times)
+#  --help               Show this help message
+#
+# Positional argument (backwards compatible):
+#  ACCTID               Account ID (same as --account ACCTID)
+#
+# Default behavior (no options):
+#  Returns account info and balances without transaction history.
+#  Use --transactions or --start-date to include transactions.
 
 # Insert an access token here, acquired with simplefinsetup.
 # (Or use a secrets manager, like https://bitwarden.com/help/secrets-manager-quick-start.)
@@ -15,10 +31,67 @@
 
 fdate() { if hash gdate 2>/dev/null; then gdate "$@"; else date "$@"; fi }
 
-START=`fdate +%s -d '-30 days'`
-ACCTPARAM=${1:+&account=$1}
+# Default: no start date (balances only)
+START_DAYS=""
+PARAMS=""
 
-curl -sL "$SIMPLEFIN_ACCESS_URL/accounts?start-date=$START$ACCTPARAM" | jq
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --transactions)
+            START_DAYS=30
+            shift
+            ;;
+        --start-date)
+            START_DAYS="$2"
+            shift 2
+            ;;
+        --end-date)
+            PARAMS="${PARAMS}&end-date=$2"
+            shift 2
+            ;;
+        --pending)
+            PARAMS="${PARAMS}&pending=1"
+            shift
+            ;;
+        --balances-only)
+            PARAMS="${PARAMS}&balances-only=1"
+            shift
+            ;;
+        --account)
+            PARAMS="${PARAMS}&account=$2"
+            shift 2
+            ;;
+        --help)
+            grep '^#' "$0" | sed 's/^# \?//'
+            exit 0
+            ;;
+        -*)
+            echo "Unknown option: $1" >&2
+            echo "Use --help for usage information" >&2
+            exit 1
+            ;;
+        *)
+            # Positional argument - treat as account ID for backwards compatible
+            PARAMS="${PARAMS}&account=$1"
+            shift
+            ;;
+    esac
+done
+
+# Build the URL
+URL="$SIMPLEFIN_ACCESS_URL/accounts"
+
+# Add start-date if specified
+if [ -n "$START_DAYS" ]; then
+    START=`fdate +%s -d "-${START_DAYS} days"`
+    URL="${URL}?start-date=$START$PARAMS"
+elif [ -n "$PARAMS" ]; then
+    # Remove leading & from PARAMS if no start-date
+    URL="${URL}?${PARAMS#&}"
+fi
+
+curl -sL "$URL" | jq
 
 # https://www.simplefin.org/protocol.html#http-endpoints
 # https://www.simplefin.org/protocol.html#get-accounts

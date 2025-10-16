@@ -1,8 +1,38 @@
 #!/usr/bin/env bash
 # Wrapper for simplefinjson that loads .env file
 # This allows using SIMPLEFIN_ACCESS_URL from .env
+#
+# Usage: simplefinjson [OPTIONS] [ACCTID]
+#
+# Options:
+#  --transactions       Include transactions from last 30 days (shortcut)
+#  --start-date DAYS    Number of days to look back
+#  --end-date TIMESTAMP Unix epoch timestamp for end date
+#  --pending            Include pending transactions
+#  --balances-only      Return only balances, no transactions
+#  --account ACCTID     Specific account ID (can be specified multiple times)
+#  --help               Show this help message
+#
+# Default behavior (no options):
+#  Returns account info and balances WITHOUT transaction history (fast).
+#  Use --transactions or --start-date to include transactions.
+#
+# Examples:
+#  simplefinjson                           # All accounts, balances only (NEW DEFAULT)
+#  simplefinjson --transactions            # All accounts with last 30 days
+#  simplefinjson --start-date 90           # All accounts, last 90 days
+#  simplefinjson --pending                 # Include pending transactions
+#  simplefinjson --account ACT-123456      # Specific account only
+#  simplefinjson ACT-123456                # Same as above (positional)
+#  simplefinjson --balances-only           # Just balances, no transactions
 
 set -e
+
+# Show help if requested before loading env
+if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+    grep '^#' "$0" | sed 's/^# \?//'
+    exit 0
+fi
 
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

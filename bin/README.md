@@ -48,13 +48,57 @@ SIMPLEFIN_ACCESS_URL="https://..."
 
 ### 3. Download account data
 
+The `simplefinjson` script supports multiple options:
+
+**Default behavior (NEW):** Returns account info and balances WITHOUT transaction history.
+This is faster and useful for checking balances. Use `--transactions` or `--start-date` to include transactions.
+
 ```bash
-# Download all accounts as JSON
+# Download all accounts with balances only (NEW DEFAULT - fast)
 bin/simplefinjson > data/simplefin.json
 
-# Download specific account
-bin/simplefinjson ACT-123456 > data/chase.json
+# Download all accounts with last 30 days of transactions
+bin/simplefinjson --transactions > data/simplefin.json
+
+# Download specific account (positional argument)
+bin/simplefinjson --transactions ACT-123456 > data/chase.json
+
+# Download last 90 days of transactions
+bin/simplefinjson --start-date 90 > data/simplefin.json
+
+# Include pending transactions
+bin/simplefinjson --transactions --pending > data/simplefin.json
+
+# Download balances only (explicit, same as default now)
+bin/simplefinjson --balances-only > data/balances.json
+
+# Download specific account with named parameter
+bin/simplefinjson --account ACT-123456 > data/chase.json
+
+# Multiple accounts with transactions
+bin/simplefinjson --transactions --account ACT-123 --account ACT-456 > data/accounts.json
+
+# Combine options
+bin/simplefinjson --start-date 90 --pending --account ACT-123456 > data/chase.json
+
+# Show help
+bin/simplefinjson --help
 ```
+
+#### Available Options:
+
+- `--transactions` - Include transactions from last 30 days (shortcut for `--start-date 30`)
+- `--start-date DAYS` - Number of days to look back for transactions
+- `--end-date TIMESTAMP` - Unix epoch timestamp for end date
+- `--pending` - Include pending transactions (if supported by institution)
+- `--balances-only` - Return only balances, no transaction data (now the default)
+- `--account ACCTID` - Specific account ID (can be specified multiple times)
+- `--help` - Show help message
+
+#### Performance Note:
+
+The default behavior (balances only) is much faster since it doesn't download transaction history.
+Use this for quick balance checks, then use `--transactions` or `--start-date` when you need transaction data.
 
 ### 4. Convert to CSV
 
