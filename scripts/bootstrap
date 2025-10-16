@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Install hledger using yay
+yay -Sy hledger
+
+# Install Python and development tools using mise
+mise use python@latest
+
+# Install Python dependencies for Plaid integration
+mise exec -- pip install plaid-python python-dotenv requests

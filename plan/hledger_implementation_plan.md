@@ -18,8 +18,8 @@
 ## Phase 1: Environment Setup (Day 1)
 
 ### Task Checklist
-- [ ] 1.1 Install Dependencies
-- [ ] 1.2 Create Project Structure
+- [x] 1.1 Install Dependencies
+- [x] 1.2 Create Project Structure
 
 ### 1.1 Install Dependencies
 ```bash
@@ -42,7 +42,7 @@ cd ~/hledger
 ## Phase 2: Basic hledger Setup (Day 1-2)
 
 ### Task Checklist
-- [ ] 2.1 Create Initial Journal Structure
+- [x] 2.1 Create Initial Journal Structure
 - [ ] 2.2 Choose Test Account
 - [ ] 2.3 Manual Entry Practice
 
