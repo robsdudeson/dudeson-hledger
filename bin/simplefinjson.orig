@@ -13,16 +13,12 @@
 # (Or use a secrets manager, like https://bitwarden.com/help/secrets-manager-quick-start.)
 : ${SIMPLEFIN_ACCESS_URL:-}
 
-set -x
-
 fdate() { if hash gdate 2>/dev/null; then gdate "$@"; else date "$@"; fi }
 
 START=`fdate +%s -d '-30 days'`
 ACCTPARAM=${1:+&account=$1}
 
 curl -sL "$SIMPLEFIN_ACCESS_URL/accounts?start-date=$START$ACCTPARAM" | jq
-
-set -x
 
 # https://www.simplefin.org/protocol.html#http-endpoints
 # https://www.simplefin.org/protocol.html#get-accounts
