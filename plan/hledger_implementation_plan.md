@@ -4,13 +4,14 @@
 
 ### 1.1 Install Dependencies
 ```bash
-# Install hledger (if not already installed)
-sudo apt update
-sudo apt install hledger
+# Install hledger using yay
+yay -S hledger
 
-# Install Python and dependencies for Plaid integration
-sudo apt install python3 python3-pip
-pip3 install plaid-python python-dotenv requests
+# Install Python and development tools using mise
+mise use -g python@latest
+
+# Install Python dependencies for Plaid integration
+pip install plaid-python python-dotenv requests
 ```
 
 ### 1.2 Create Project Structure
