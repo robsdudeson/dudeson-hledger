@@ -47,9 +47,9 @@ cd ~/hledger
 - [ ] 2.3 Manual Entry Practice
 
 ### 2.1 Create Initial Journal Structure
-- [ ] Create `journal/main.journal` as the primary entry point
-- [ ] Create `journal/accounts.journal` for account definitions
-- [ ] Create `journal/2024.journal` for current year transactions
+- [x] Create `journal/main.journal` as the primary entry point
+- [x] Create `journal/accounts.journal` for account definitions
+- [x] Create `journal/2025.journal` for current year transactions
 - [ ] Set up basic account structure
 
 ### 2.2 Choose Test Account

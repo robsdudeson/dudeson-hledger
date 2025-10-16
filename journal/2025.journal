@@ -1,0 +1,10 @@
+; 2025 Transactions
+
+; Opening Balance - Chase Checking
+; Replace the date and amount with your actual opening balance
+; To find your opening balance, check your bank statement for today's balance
+2025-01-01 * Opening Balance
+    Assets:Checking:Chase           $0.00
+    Equity:Opening
+
+; Add your transactions below this line

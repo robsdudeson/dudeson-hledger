@@ -1,0 +1,8 @@
+; Main hledger journal file
+; This is the entry point for all financial records
+
+; Include account definitions
+include accounts.journal
+
+; Include yearly transaction files
+include 2025.journal

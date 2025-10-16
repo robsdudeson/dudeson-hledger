@@ -1,0 +1,84 @@
+; Account Declarations
+; This file defines all accounts used in the ledger
+
+; Asset Accounts
+account Assets:Checking:Chase
+  description Chase Checking Account
+  note Primary checking account
+
+account Assets:Checking:CapitalOne:Account1
+account Assets:Checking:CapitalOne:Account2
+account Assets:Checking:CapitalOne:Account3
+account Assets:Checking:CME
+
+account Assets:Savings:CapitalOne:Account1
+account Assets:Savings:CapitalOne:Account2
+account Assets:Savings:CapitalOne:Account3
+account Assets:Savings:CME
+
+account Assets:HSA:CME
+  description CME Health Savings Account
+
+account Assets:Cash
+  description Physical cash
+
+; Liability Accounts
+account Liabilities:CreditCards:Chase:Card1
+account Liabilities:CreditCards:Chase:Card2
+account Liabilities:CreditCards:Chase:Card3
+account Liabilities:CreditCards:Chase:Card4
+account Liabilities:CreditCards:CapitalOne:Card1
+account Liabilities:CreditCards:CapitalOne:Card2
+account Liabilities:CreditCards:CapitalOne:Card3
+account Liabilities:CreditCards:CME
+
+account Liabilities:Loans:CME:HELOC
+  description Home Equity Line of Credit
+account Liabilities:Loans:CME:Auto
+  description Auto Loan
+account Liabilities:Loans:CME:Camper
+  description Camper Loan
+
+; Income Accounts
+account Income:Salary
+account Income:Freelance
+account Income:Interest
+account Income:Other
+
+; Expense Accounts
+account Expenses:Housing:Rent
+account Expenses:Housing:Utilities
+account Expenses:Housing:Maintenance
+
+account Expenses:Food:Groceries
+account Expenses:Food:DiningOut
+account Expenses:Food:Coffee
+account Expenses:Food:FastFood
+
+account Expenses:Transportation:Gas
+account Expenses:Transportation:Maintenance
+account Expenses:Transportation:Parking
+account Expenses:Transportation:Rideshare
+
+account Expenses:Healthcare:Medical
+account Expenses:Healthcare:Pharmacy
+account Expenses:Healthcare:Insurance
+
+account Expenses:Entertainment:Subscriptions
+account Expenses:Entertainment:Movies
+account Expenses:Entertainment:Hobbies
+
+account Expenses:Shopping:Online
+account Expenses:Shopping:Groceries
+account Expenses:Shopping:Clothes
+account Expenses:Shopping:Electronics
+
+account Expenses:Finance:Fees
+account Expenses:Finance:Interest
+
+account Expenses:Other
+  description Uncategorized expenses for review
+
+; Equity Accounts
+account Equity:Opening
+  description Opening balances
