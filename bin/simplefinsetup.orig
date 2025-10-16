@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+# Acquire an access url for SimpleFIN.
+
+# Insert a setup token here, acquired from the website, then run this script once.
+: ${SIMPLEFIN_SETUP_TOKEN:-}
+
+CLAIM_URL="$(echo "$SIMPLEFIN_SETUP_TOKEN" | base64 --decode)"
+export SIMPLEFIN_ACCESS_URL=$(curl -s -H "Content-Length: 0" -X POST "$CLAIM_URL")
+echo $SIMPLEFIN_ACCESS_URL

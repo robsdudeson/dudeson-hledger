@@ -1,30 +1,31 @@
-#!/bin/bash
-# simplefinjson 1.1 - (c) Simon Michael 2025
-# simplefinjson [ACCTID]
-#  download the last 30 days' transaction history of one or all accounts from SimpleFIN, and print as tidy JSON.
-#
-# Requirements:
-#  a SimpleFIN account with financial institution(s) and app connection configured
-#  curl
-#  GNU date
-#  jq to prettify
+#!/usr/bin/env bash
+# Wrapper for simplefinjson that loads .env file
+# This allows using SIMPLEFIN_ACCESS_URL from .env
 
-# Insert an access token here, acquired with simplefinsetup.
-# (Or use a secrets manager, like https://bitwarden.com/help/secrets-manager-quick-start.)
-SIMPLEFIN_ACCESS_URL=''
+set -e
 
-date() { if hash gdate 2>/dev/null; then gdate "$@"; else date "$@"; fi }
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-START=`date +%s -d '-30 days'`
-ACCTPARAM=${1:+&account=$1}
+# Load environment variables from .env if it exists
+if [ -f "$PROJECT_ROOT/.env" ]; then
+    set -a  # Enable allexport mode
+    source "$PROJECT_ROOT/.env"
+    set +a  # Disable allexport mode
+fi
 
-curl -sL "$SIMPLEFIN_ACCESS_URL/accounts?start-date=$START$ACCTPARAM" | jq
+# Load environment from load-env helper if available
+if [ -f "$SCRIPT_DIR/load-env" ]; then
+    source "$SCRIPT_DIR/load-env" "$PROJECT_ROOT/.env" 2>/dev/null || true
+fi
 
-# https://www.simplefin.org/protocol.html#http-endpoints
-# https://www.simplefin.org/protocol.html#get-accounts
-# Parameter	Required	Description
-# start-date	optional	If given, transactions will be restricted to those on or after this Unix epoch timestamp.
-# end-date	optional	If given, transactions will be restricted to those before (but not on) this Unix epoch timestamp.
-# pending	optional	If pending=1 is provided, pending transactions will be included (if supported). By default, pending transaction are NOT included.
-# account	optional	If given, only return information related to the given account id. May be specified multiple times.
-# balances-only	optional	If balances-only=1 is provided, no transaction data is returned.
+# Check if SIMPLEFIN_ACCESS_URL is set
+if [ -z "$SIMPLEFIN_ACCESS_URL" ]; then
+    echo "Error: SIMPLEFIN_ACCESS_URL not found in environment or .env file" >&2
+    echo "Please run 'simplefinsetup' first to configure SimpleFIN access" >&2
+    exit 1
+fi
+
+# Run the original simplefinjson script with all arguments
+exec "$SCRIPT_DIR/simplefinjson.orig" "$@"

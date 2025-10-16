@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# load-env - Helper script to load environment variables from a .env file
+# Usage: source bin/load-env [path/to/.env]
+#
+# This script safely loads environment variables from a .env file
+# while handling comments, empty lines, and preventing command injection
+
+load_env_file() {
+    local env_file="${1:-.env}"
+
+    if [ ! -f "$env_file" ]; then
+        echo "Warning: .env file not found at $env_file" >&2
+        return 1
+    fi
+
+    # Read the .env file line by line
+    while IFS= read -r line || [ -n "$line" ]; do
+        # Skip empty lines and comments
+        [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
+
+        # Remove inline comments
+        line=$(echo "$line" | sed 's/[[:space:]]*#.*$//')
+
+        # Export the variable (handles KEY=VALUE format)
+        if [[ "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]]; then
+            export "$line"
+        fi
+    done < "$env_file"
+
+    echo "Loaded environment from: $env_file" >&2
+}
+
+# Only run if sourced, not executed
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
+    echo "Error: This script must be sourced, not executed directly" >&2
+    echo "Usage: source ${BASH_SOURCE[0]} [path/to/.env]" >&2
+    exit 1
+else
+    load_env_file "$@"
+fi
