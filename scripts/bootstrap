@@ -3,7 +3,7 @@
 set -e
 
 # Install hledger using yay
-yay -Sy hledger
+yay -Sy hledger-bin hledger-web-bin hledger-ui-bin 
 
 # Install Python and development tools using mise
 mise use python@latest
