@@ -15,16 +15,16 @@ pip3 install plaid-python python-dotenv requests
 
 ### 1.2 Create Project Structure
 ```bash
-mkdir -p ~/hledger/{scripts,data,backups}
+mkdir -p ~/hledger/{journal,scripts,data,backups}
 cd ~/hledger
 ```
 
 ## Phase 2: Basic hledger Setup (Day 1-2)
 
 ### 2.1 Create Initial Journal Structure
-- Create `main.journal` as the primary entry point
-- Create `accounts.journal` for account definitions
-- Create `2024.journal` for current year transactions
+- Create `journal/main.journal` as the primary entry point
+- Create `journal/accounts.journal` for account definitions
+- Create `journal/2024.journal` for current year transactions
 - Set up basic account structure
 
 ### 2.2 Choose Test Account

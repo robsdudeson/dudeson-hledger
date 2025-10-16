@@ -32,9 +32,9 @@ Expenses:
 
 ## 2. Key Files Structure
 
-- `main.journal` - Primary journal file
-- `accounts.journal` - Account declarations and aliases
-- `2024.journal` - Yearly transaction file
+- `journal/main.journal` - Primary journal file
+- `journal/accounts.journal` - Account declarations and aliases
+- `journal/2024.journal` - Yearly transaction file
 - `scripts/` - Helper scripts for common operations
 
 ## 3. Daily Workflow
