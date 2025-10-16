@@ -257,3 +257,29 @@ This plan focuses on getting one account working perfectly before scaling up to 
 - Requires SimpleFIN Bridge subscription
 - May have fewer supported banks than Plaid
 - Transaction data typically limited to last 90 days initially
+
+---
+
+## 📝 Documentation Maintenance
+
+**IMPORTANT:** This implementation plan should be the single source of truth for the project setup and workflow.
+
+### When to Update This Plan:
+- ✅ Adding or removing accounts
+- ✅ Changing workflow or automation scripts
+- ✅ Updating SimpleFIN integration methods
+- ✅ Modifying file structure or directory organization
+- ✅ Changing configuration files or environment setup
+- ✅ Adding new tools or dependencies
+
+### Related Documentation:
+- **README.md** - Project overview, should mirror key sections from this plan
+- **plan/hledger_planning.md** - High-level planning document
+- **bin/README.md** - SimpleFIN scripts documentation
+- **.env.example** - Environment variable template
+
+**Action Required:** After any significant changes to workflow, file structure, or setup:
+1. Update this implementation plan first
+2. Update README.md to reflect changes (if user-facing)
+3. Update other related documentation as needed
+4. Mark the update date in "Implementation Status" section
