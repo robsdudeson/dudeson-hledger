@@ -7,7 +7,7 @@ echo ""
 
 # Install hledger and related tools using yay
 echo "Installing hledger binaries..."
-yay -Sy --needed hledger-bin hledger-web-bin hledger-ui-bin
+yay -Sy --needed hledger-bin hledger-web-bin hledger-ui-bin jq
 
 echo ""
 echo "Downloading SimpleFIN scripts from GitHub..."
@@ -15,18 +15,27 @@ echo "Downloading SimpleFIN scripts from GitHub..."
 mkdir -p bin
 
 # Download SimpleFIN scripts directly (no git clone needed)
+# Download as .orig since we'll create wrappers that load .env
 echo "Downloading simplefinsetup..."
-curl -fsSL -o bin/simplefinsetup https://raw.githubusercontent.com/simonmichael/hledger/master/bin/simplefinsetup
+curl -fsSL -o bin/simplefinsetup.orig https://raw.githubusercontent.com/simonmichael/hledger/master/bin/simplefinsetup
 
 echo "Downloading simplefinjson..."
-curl -fsSL -o bin/simplefinjson https://raw.githubusercontent.com/simonmichael/hledger/master/bin/simplefinjson
+curl -fsSL -o bin/simplefinjson.orig https://raw.githubusercontent.com/simonmichael/hledger/master/bin/simplefinjson
 
 echo "Downloading simplefincsv..."
 curl -fsSL -o bin/simplefincsv https://raw.githubusercontent.com/simonmichael/hledger/master/bin/simplefincsv
 
 # Make scripts executable
 chmod +x bin/simplefin*
-echo "SimpleFIN scripts downloaded and ready in bin/ directory"
+echo "SimpleFIN scripts downloaded to bin/ directory"
+
+# Note: Wrappers for simplefinsetup and simplefinjson should already exist in bin/
+# These wrappers automatically load .env file before calling the .orig scripts
+if [ -f bin/simplefinsetup ] && [ -f bin/simplefinjson ]; then
+    echo "SimpleFIN .env wrappers detected in bin/"
+else
+    echo "Note: Create wrapper scripts to automatically load .env file"
+fi
 
 # Optional: Install Python if needed for custom scripts
 # Uncomment these lines if you want Python support
