@@ -26,13 +26,14 @@
 # Install hledger and related tools using yay
 yay -S hledger-bin hledger-web-bin hledger-ui-bin
 
-# Clone hledger repository for SimpleFIN scripts
-git clone https://github.com/simonmichael/hledger.git ~/hledger-repo
-
-# Add SimpleFIN scripts to PATH
-mkdir -p ~/hledger/scripts
-cp ~/hledger-repo/bin/simplefin* ~/hledger/scripts/
-chmod +x ~/hledger/scripts/simplefin*
+# Download SimpleFIN scripts directly from GitHub (no repo clone needed)
+mkdir -p bin
+cd bin
+curl -O https://raw.githubusercontent.com/simonmichael/hledger/master/bin/simplefinsetup
+curl -O https://raw.githubusercontent.com/simonmichael/hledger/master/bin/simplefinjson
+curl -O https://raw.githubusercontent.com/simonmichael/hledger/master/bin/simplefincsv
+chmod +x simplefin*
+cd ..
 
 # Optional: Install Python if needed for custom scripts
 # mise use -g python@latest
@@ -41,8 +42,8 @@ chmod +x ~/hledger/scripts/simplefin*
 
 ### 1.2 Create Project Structure
 ```bash
-mkdir -p ~/hledger/{journal,scripts,data,backups}
-cd ~/hledger
+# From your project root (e.g., ~/code/dudeson-hledger)
+mkdir -p journal bin scripts data backups logs
 ```
 
 ## Phase 2: Basic hledger Setup (Day 1-2)
@@ -84,9 +85,8 @@ cd ~/hledger
 
 ### 3.2 Set Up SimpleFIN Access
 ```bash
-# Run SimpleFIN setup script (one-time setup)
-cd ~/hledger/scripts
-./simplefinsetup
+# Run SimpleFIN setup script (one-time setup, from project root)
+bin/simplefinsetup
 
 # This will:
 # 1. Prompt you to paste your Setup Token
@@ -96,11 +96,11 @@ cd ~/hledger/scripts
 
 ### 3.3 Test SimpleFIN Connection
 ```bash
-# Download account data as JSON
-./simplefinjson > ~/hledger/data/simplefin.json
+# Download account data as JSON (from project root)
+bin/simplefinjson > data/simplefin.json
 
 # Verify the JSON contains your account data
-cat ~/hledger/data/simplefin.json | head -20
+cat data/simplefin.json | head -20
 ```
 - [ ] Verify account data is downloaded successfully
 - [ ] Check that transactions are present in JSON
@@ -170,7 +170,8 @@ cat ~/hledger/data/simplefin.json | head -20
 ```bash
 # Add to crontab for daily sync at 6 AM
 crontab -e
-# Add line: 0 6 * * * cd ~/hledger && bash scripts/sync_simplefin.sh >> logs/sync.log 2>&1
+# Replace /path/to/project with your actual project path
+# Add line: 0 6 * * * cd /path/to/project && PATH=$PATH:/path/to/project/bin bash scripts/sync_simplefin.sh >> logs/sync.log 2>&1
 ```
 
 ## Phase 6: Workflow Integration (Day 5-7)

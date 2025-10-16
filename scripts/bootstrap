@@ -2,11 +2,43 @@
 
 set -e
 
-# Install hledger using yay
-yay -Sy hledger-bin hledger-web-bin hledger-ui-bin 
+echo "=== hledger Environment Bootstrap ==="
+echo ""
 
-# Install Python and development tools using mise
-mise use python@latest
+# Install hledger and related tools using yay
+echo "Installing hledger binaries..."
+yay -Sy --needed hledger-bin hledger-web-bin hledger-ui-bin
 
-# Install Python dependencies for Plaid integration
-mise exec -- pip install plaid-python python-dotenv requests
+echo ""
+echo "Downloading SimpleFIN scripts from GitHub..."
+# Create bin directory if it doesn't exist
+mkdir -p bin
+
+# Download SimpleFIN scripts directly (no git clone needed)
+echo "Downloading simplefinsetup..."
+curl -fsSL -o bin/simplefinsetup https://raw.githubusercontent.com/simonmichael/hledger/master/bin/simplefinsetup
+
+echo "Downloading simplefinjson..."
+curl -fsSL -o bin/simplefinjson https://raw.githubusercontent.com/simonmichael/hledger/master/bin/simplefinjson
+
+echo "Downloading simplefincsv..."
+curl -fsSL -o bin/simplefincsv https://raw.githubusercontent.com/simonmichael/hledger/master/bin/simplefincsv
+
+# Make scripts executable
+chmod +x bin/simplefin*
+echo "SimpleFIN scripts downloaded and ready in bin/ directory"
+
+# Optional: Install Python if needed for custom scripts
+# Uncomment these lines if you want Python support
+# echo ""
+# echo "Installing Python via mise (optional)..."
+# mise use -g python@latest
+# mise exec -- pip install python-dotenv requests
+
+echo ""
+echo "=== Bootstrap Complete ==="
+echo ""
+echo "Next steps:"
+echo "1. Create project structure: mkdir -p journal data backups logs"
+echo "2. Add bin/ to your PATH or run: ./bin/simplefinsetup (after getting SimpleFIN Bridge account)"
+echo "3. Follow Phase 2 of the implementation plan"
