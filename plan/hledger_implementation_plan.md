@@ -50,7 +50,7 @@ mkdir -p journal bin scripts data backups logs
 
 ### Task Checklist
 - [x] 2.1 Create Initial Journal Structure
-- [ ] 2.2 Choose Test Account
+- [x] 2.2 Choose Test Account
 - [ ] 2.3 Manual Entry Practice
 
 ### 2.1 Create Initial Journal Structure
@@ -73,15 +73,15 @@ mkdir -p journal bin scripts data backups logs
 ## Phase 3: SimpleFIN Integration Setup (Day 2-3)
 
 ### Task Checklist
-- [ ] 3.1 SimpleFIN Bridge Account
-- [ ] 3.2 Set Up SimpleFIN Access
-- [ ] 3.3 Test SimpleFIN Connection
+- [x] 3.1 SimpleFIN Bridge Account
+- [x] 3.2 Set Up SimpleFIN Access
+- [x] 3.3 Test SimpleFIN Connection
 
 ### 3.1 SimpleFIN Bridge Account
-- [ ] Sign up at https://beta-bridge.simplefin.org/
-- [ ] Subscribe to SimpleFIN Bridge ($1.50/month or $15/year)
-- [ ] Connect your first bank account (Chase Checking recommended)
-- [ ] Get your Setup Token from the dashboard
+- [x] Sign up at https://beta-bridge.simplefin.org/
+- [x] Subscribe to SimpleFIN Bridge ($1.50/month or $15/year)
+- [x] Connect your first bank account (Chase Checking recommended)
+- [x] Get your Setup Token from the dashboard
 
 ### 3.2 Set Up SimpleFIN Access
 ```bash
@@ -102,9 +102,9 @@ bin/simplefinjson > data/simplefin.json
 # Verify the JSON contains your account data
 cat data/simplefin.json | head -20
 ```
-- [ ] Verify account data is downloaded successfully
-- [ ] Check that transactions are present in JSON
-- [ ] Confirm account balances match your bank
+- [x] Verify account data is downloaded successfully
+- [x] Check that transactions are present in JSON
+- [x] Confirm account balances match your bank
 
 ## Phase 4: Automation Script Development (Day 3-4)
 
