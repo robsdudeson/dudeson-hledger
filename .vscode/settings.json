@@ -1,0 +1,14 @@
+{
+  "customLocalFormatters.formatters": [
+    {
+      "command": "mise exec -- hledger-fmt - --no-diff --exit-zero-on-changes",
+      "languages": [
+        "hledger"
+      ]
+    }
+  ],
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "*.journal": "hledger"
+  }
+}

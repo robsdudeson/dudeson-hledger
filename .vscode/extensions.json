@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "mark-hansen.hledger-vscode",
+        "bruno-api-client.bruno",
+        "jkillian.custom-local-formatters",
+        "richie5um2.vscode-sort-json"
+    ]
+}
