@@ -7,18 +7,49 @@ account Assets:Checking:Chase:Income
   note Primary checking account from SimpleFIN
   simplefin-id ACT-22d80af0-19ab-482d-a43e-1c3e34427198
 
-account Assets:Checking:CapitalOne:Account1
-account Assets:Checking:CapitalOne:Account2
-account Assets:Checking:CapitalOne:Account3
-account Assets:Checking:CME
+account Assets:Checking:Capital_One:360_Checking
+  description Capital One - 360 Checking
+  simplefin-id ACT-bbdabf55-1f60-4f0b-bc30-0ed554d15b48
 
-account Assets:Savings:CapitalOne:Account1
-account Assets:Savings:CapitalOne:Account2
-account Assets:Savings:CapitalOne:Account3
-account Assets:Savings:CME
+account Assets:Checking:Capital_One:360_Checking
+  description Capital One - 360 Checking
+  simplefin-id ACT-e5f1e531-c40a-44e9-bc30-90045f8e88d9
 
-account Assets:HSA:CME
-  description CME Health Savings Account
+account Assets:Checking:Capital_One:360_Checking
+  description Capital One - 360 Checking
+  simplefin-id ACT-73c68e5e-bdd8-48e0-bf55-33abe40fd255
+
+account Assets:Checking:CME_Federal_Credit_Union:CME_BASIC_CHECKING
+  description CME Federal Credit Union - CME BASIC CHECKING
+  simplefin-id ACT-a2c3ca78-0b57-425c-8d19-ca86788cf99a
+
+account Assets:Savings:CME_Federal_Credit_Union:HEALTH_SAVINGS_ACCOUNT
+  description CME Federal Credit Union - HEALTH SAVINGS ACCOUNT
+  simplefin-id ACT-6beac205-4794-4fbf-8f72-e8449f1a0d29
+
+account Assets:Savings:PENFED:Regular_Savings
+  description PENFED - Regular Savings
+  simplefin-id ACT-4c8cfc64-8506-420d-9f88-25f5465ec6c2
+
+account Assets:Savings:Capital_One:360_Performance_Savings
+  description Capital One - 360 Performance Savings
+  simplefin-id ACT-4b923f8a-2f68-4b80-a45d-cef2d009c576
+
+account Assets:Savings:CME_Federal_Credit_Union:ADVANTAGE_SHARE
+  description CME Federal Credit Union - ADVANTAGE SHARE
+  simplefin-id ACT-d9eaa12e-0251-4dae-9eaf-c95de9ea8a9a
+
+account Assets:Other:Ohio_Tuition_Trust__CollegeAdvantage_Guaranteed_529_Saving_Plan:78209355002
+  description Ohio Tuition Trust - CollegeAdvantage Guaranteed 529 Saving Plan - 782093550-02
+  simplefin-id ACT-ba005817-49df-4a1f-9307-dfea3f090104
+
+account Assets:Other:Vanguard_Retirement__Ascensus:Account
+  description Vanguard Retirement - Ascensus - Account
+  simplefin-id ACT-1163d76c-19fc-40ad-817e-556b1abfbbc2
+
+account Assets:Other:Ohio_Tuition_Trust__CollegeAdvantage_Guaranteed_529_Saving_Plan:78209355001
+  description Ohio Tuition Trust - CollegeAdvantage Guaranteed 529 Saving Plan - 782093550-01
+  simplefin-id ACT-325f2ac9-8d3e-4328-ad19-c055159f61f1
 
 account Assets:Cash
   description Physical cash
@@ -32,17 +63,77 @@ account Liabilities:CreditCards:Chase:Amazon
   description Chase Amazon Credit Card
   simplefin-id ACT-ab7e2792-8ba2-438e-adad-be64d94d3428
 
-account Liabilities:CreditCards:CapitalOne:Card1
-account Liabilities:CreditCards:CapitalOne:Card2
-account Liabilities:CreditCards:CapitalOne:Card3
-account Liabilities:CreditCards:CME
+account Liabilities:CreditCards:Capital_One:Kohls_Rewards_Visa
+  description Capital One - Kohl's Rewards Visa
+  simplefin-id ACT-8b8388aa-6b0e-42cd-8013-47e08ced7db7
 
-account Liabilities:Loans:CME:HELOC
-  description Home Equity Line of Credit
-account Liabilities:Loans:CME:Auto
-  description Auto Loan
-account Liabilities:Loans:CME:Camper
-  description Camper Loan
+account Liabilities:CreditCards:Chase_Bank:Disney_Premier_Visa
+  description Chase Bank - Disney Premier Visa
+  simplefin-id ACT-ebd2e2a5-676b-4a7a-a690-48dd1953bd13
+
+account Liabilities:CreditCards:CME_Federal_Credit_Union:PLATINUM_REWARDS_MASTERCARD
+  description CME Federal Credit Union - PLATINUM REWARDS MASTERCARD
+  simplefin-id ACT-bd8e3073-ba02-4799-9a88-1eb0668618ad
+
+account Liabilities:CreditCards:American_Express:Amex_EveryDay_Preferred
+  description American Express - Amex EveryDay® Preferred
+  simplefin-id ACT-8efb9414-1753-44cb-9af7-46d01f976360
+
+account Liabilities:CreditCards:Wells_Fargo:WELLS_FARGO_REFLECT_VISA_CARD_8372
+  description Wells Fargo - WELLS FARGO REFLECT VISA® CARD ...8372
+  simplefin-id ACT-d8f6a3dd-2c93-4682-9c17-14e2a0a9d877
+
+account Liabilities:CreditCards:Synchrony_Bank__Credit_Cards:Google_Store_Financing_credit_card
+  description Synchrony Bank - Credit Cards - Google Store Financing credit card
+  simplefin-id ACT-0fd333dc-630d-42fd-821e-792a417cdc3c
+
+account Liabilities:CreditCards:Home_Depot_Credit_Card_by_Citibank:The_Home_Depot_Consumer_Credit_Card0442
+  description Home Depot Credit Card by Citibank - The Home Depot® Consumer Credit Card-0442
+  simplefin-id ACT-0f0f9ec7-93b9-4466-9bac-085cea410b0a
+
+account Liabilities:CreditCards:Wells_Fargo:MICRO_CENTER_1271
+  description Wells Fargo - MICRO CENTER ...1271
+  simplefin-id ACT-c90c1095-1d2e-4f36-96a4-bf18b210c552
+
+account Liabilities:CreditCards:Capital_One:VentureOne
+  description Capital One - VentureOne
+  simplefin-id ACT-fb5ea34b-5356-4222-8114-b03c815e8b24
+
+account Liabilities:CreditCards:American_Express:Platinum_Card
+  description American Express - Platinum Card®
+  simplefin-id ACT-2fc61a54-9004-4a99-8fdf-ebcefd306421
+
+account Liabilities:CreditCards:Capital_One:REI_Coop_Mastercard
+  description Capital One - REI Co-op Mastercard
+  simplefin-id ACT-0c79bb5a-d2d3-4565-abe4-5fea6994c445
+
+account Liabilities:CreditCards:Wells_Fargo:CHOICE_PRIVILEGES_SELECT_MASTERCARD_4270
+  description Wells Fargo - CHOICE PRIVILEGES® SELECT MASTERCARD® ...4270
+  simplefin-id ACT-4619525d-51ef-407e-b977-7b5d7d1bb20f
+
+account Liabilities:CreditCards:PENFED:Power_Cash_Rewards
+  description PENFED - Power Cash Rewards
+  simplefin-id ACT-019ffab4-eb21-477d-9e6b-9b4964e4de3d
+
+account Liabilities:CreditCards:Target_Credit_Card:Target_CircleCard
+  description Target Credit Card - Target CircleCard
+  simplefin-id ACT-2fe90e8f-8d86-442f-bb20-9b9f8dba2e66
+
+account Liabilities:Loans:CME_Federal_Credit_Union:2021_TOYOTA_TUNDRA_CREWMAX
+  description CME Federal Credit Union - 2021 TOYOTA TUNDRA CREWMAX
+  simplefin-id ACT-4bc641e7-cd92-47fa-8079-8e9ab45b5e41
+
+account Liabilities:Loans:CME_Federal_Credit_Union:2020_COACHMEN_BY_FOREST_RIVER
+  description CME Federal Credit Union - 2020 COACHMEN BY FOREST RIVER
+  simplefin-id ACT-67eef1ce-9638-490a-8639-f06810c78687
+
+account Liabilities:Loans:CME_Federal_Credit_Union:HELOC_PREMIUM_PLUS
+  description CME Federal Credit Union - HELOC PREMIUM PLUS
+  simplefin-id ACT-78600186-6de3-4c8f-b047-50ba40c0e10e
+
+account Liabilities:Loans:Vinton_County_National_Bank:RESIDENTIAL_RE
+  description Vinton County National Bank - RESIDENTIAL R.E.
+  simplefin-id ACT-1accb726-783d-4b38-983c-696a3c47857c
 
 ; Income Accounts
 account Income:Salary

@@ -1,0 +1,328 @@
+#!/usr/bin/env bash
+# Verify SimpleFin accounts against journal
+#
+# This script:
+# - Fetches accounts from SimpleFin
+# - Checks that all SimpleFin accounts exist in the journal with matching simplefin-id
+# - Reports any journal accounts with simplefin-id that are not in SimpleFin
+# - Optionally adds missing SimpleFin accounts to the journal
+#
+# Usage: verify-simplefin-accounts [--add]
+#
+# Options:
+#   --add    Automatically add missing SimpleFin accounts to the journal
+
+set -e
+
+# Parse command line arguments
+ADD_ACCOUNTS=false
+if [[ "$1" == "--add" ]]; then
+    ADD_ACCOUNTS=true
+fi
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Default journal file location
+JOURNAL_FILE="${JOURNAL_FILE:-$PROJECT_ROOT/journal/accounts.journal}"
+
+if [ ! -f "$JOURNAL_FILE" ]; then
+    echo "Error: Journal file not found at $JOURNAL_FILE" >&2
+    echo "Set JOURNAL_FILE environment variable to specify a different location" >&2
+    exit 1
+fi
+
+echo "Fetching accounts from SimpleFin..."
+SIMPLEFIN_DATA=$("$SCRIPT_DIR/simplefinjson" --balances-only)
+
+# Extract SimpleFin account IDs
+SIMPLEFIN_IDS=$(echo "$SIMPLEFIN_DATA" | jq -r '.accounts[].id' | sort)
+
+if [ -z "$SIMPLEFIN_IDS" ]; then
+    echo "Error: No accounts found in SimpleFin response" >&2
+    exit 1
+fi
+
+echo "Found $(echo "$SIMPLEFIN_IDS" | wc -l) SimpleFin accounts"
+echo
+
+# Extract journal account IDs with simplefin-id tag
+JOURNAL_IDS=$(grep -E '^\s*simplefin-id\s+' "$JOURNAL_FILE" | awk '{print $2}' | sort)
+
+if [ -z "$JOURNAL_IDS" ]; then
+    echo "Warning: No accounts with simplefin-id found in journal" >&2
+    echo
+fi
+
+echo "Found $(echo "$JOURNAL_IDS" | wc -l | xargs) journal accounts with simplefin-id"
+echo
+
+# Function to determine account type and category from SimpleFin data
+get_account_info() {
+    local sfin_id="$1"
+    local account_data=$(echo "$SIMPLEFIN_DATA" | jq -r --arg id "$sfin_id" '.accounts[] | select(.id == $id)')
+
+    local name=$(echo "$account_data" | jq -r '.name')
+    local org=$(echo "$account_data" | jq -r '.org.name')
+    local balance=$(echo "$account_data" | jq -r '.balance')
+
+    # Determine account type based on name patterns first, then balance
+    local account_type=""
+    local category=""
+
+    # Prioritize account name patterns over balance (more reliable)
+    # Convert to lowercase for case-insensitive matching
+    local name_lower=$(echo "$name" | tr '[:upper:]' '[:lower:]')
+    local org_lower=$(echo "$org" | tr '[:upper:]' '[:lower:]')
+
+    if [[ "$name_lower" =~ (checking|chk) ]]; then
+        account_type="Assets"
+        category="Checking"
+    elif [[ "$name_lower" =~ (savings|sav|performance|share) ]]; then
+        account_type="Assets"
+        category="Savings"
+    elif [[ "$name_lower" =~ (hsa|health.*savings) ]]; then
+        account_type="Assets"
+        category="HSA"
+    elif [[ "$name_lower" =~ (529|collegeadvantage|retirement|vanguard) ]]; then
+        account_type="Assets"
+        category="Investments"
+    elif [[ "$name_lower" =~ (heloc|auto|camper|toyota|coachmen|tundra|forest.*river) ]] || [[ "$name_lower" =~ ^residential ]]; then
+        account_type="Liabilities"
+        category="Loans"
+    elif [[ "$name_lower" =~ (card|mastercard|visa|preferred|rewards|premier) ]] || [[ "$org_lower" =~ (american express|target credit card|synchrony.*credit) ]]; then
+        account_type="Liabilities"
+        category="CreditCards"
+    else
+        # Fall back to balance check (use awk for more reliable comparison)
+        local balance_positive=$(awk -v bal="$balance" 'BEGIN { if (bal > 0) print "yes"; else print "no" }')
+        if [[ "$balance_positive" == "yes" ]]; then
+            account_type="Assets"
+            category="Other"
+        else
+            # Negative or zero balance defaults to credit card
+            account_type="Liabilities"
+            category="CreditCards"
+        fi
+    fi
+
+    # Sanitize organization name for account path
+    local org_clean=$(echo "$org" | sed 's/ /_/g' | sed 's/[^a-zA-Z0-9_]//g')
+
+    echo "$account_type|$category|$org_clean|$name|$org"
+}
+
+# Function to generate account declaration
+generate_account_declaration() {
+    local sfin_id="$1"
+    local info=$(get_account_info "$sfin_id")
+
+    IFS='|' read -r account_type category org_clean name org <<< "$info"
+
+    # Sanitize account name for path
+    local name_clean=$(echo "$name" | sed 's/[^a-zA-Z0-9 ]//g' | sed 's/ /_/g' | cut -c1-50)
+
+    # Build account path
+    local account_path="${account_type}:${category}:${org_clean}:${name_clean}"
+
+    # Generate the declaration
+    cat << EOF
+account ${account_path}
+  description ${org} - ${name}
+  simplefin-id ${sfin_id}
+EOF
+}
+
+# Function to add accounts to journal
+add_accounts_to_journal() {
+    local temp_file=$(mktemp)
+    local accounts_to_add=()
+
+    # Collect all missing accounts
+    while IFS= read -r sfin_id; do
+        if ! echo "$JOURNAL_IDS" | grep -q "^$sfin_id$"; then
+            accounts_to_add+=("$sfin_id")
+        fi
+    done <<< "$SIMPLEFIN_IDS"
+
+    if [ ${#accounts_to_add[@]} -eq 0 ]; then
+        echo "No accounts to add"
+        return
+    fi
+
+    # Group accounts by type
+    declare -A assets_checking=()
+    declare -A assets_savings=()
+    declare -A assets_hsa=()
+    declare -A assets_investments=()
+    declare -A assets_other=()
+    declare -A liabilities_cards=()
+    declare -A liabilities_loans=()
+
+    for sfin_id in "${accounts_to_add[@]}"; do
+        local info=$(get_account_info "$sfin_id")
+        IFS='|' read -r account_type category org_clean name org <<< "$info"
+
+        if [[ "$account_type" == "Assets" ]]; then
+            case "$category" in
+                Checking) assets_checking["$sfin_id"]="$info" ;;
+                Savings) assets_savings["$sfin_id"]="$info" ;;
+                HSA) assets_hsa["$sfin_id"]="$info" ;;
+                Investments) assets_investments["$sfin_id"]="$info" ;;
+                *) assets_other["$sfin_id"]="$info" ;;
+            esac
+        else
+            case "$category" in
+                CreditCards) liabilities_cards["$sfin_id"]="$info" ;;
+                Loans) liabilities_loans["$sfin_id"]="$info" ;;
+            esac
+        fi
+    done
+
+    # Copy existing journal and add new accounts in appropriate sections
+    cp "$JOURNAL_FILE" "$temp_file"
+
+    # Add assets
+    if [ ${#assets_checking[@]} -gt 0 ] || [ ${#assets_savings[@]} -gt 0 ] || [ ${#assets_hsa[@]} -gt 0 ] || [ ${#assets_investments[@]} -gt 0 ] || [ ${#assets_other[@]} -gt 0 ]; then
+        # Find the line after "; Asset Accounts" and before "account Assets:Cash" or "; Liability Accounts"
+        local insert_line=$(grep -n "^account Assets:Cash" "$JOURNAL_FILE" | cut -d: -f1)
+        if [ -z "$insert_line" ]; then
+            insert_line=$(grep -n "^; Liability Accounts" "$JOURNAL_FILE" | cut -d: -f1)
+        fi
+
+        if [ -n "$insert_line" ]; then
+            {
+                head -n $((insert_line - 1)) "$JOURNAL_FILE"
+
+                for sfin_id in "${!assets_checking[@]}"; do
+                    generate_account_declaration "$sfin_id"
+                    echo ""
+                done
+
+                for sfin_id in "${!assets_savings[@]}"; do
+                    generate_account_declaration "$sfin_id"
+                    echo ""
+                done
+
+                for sfin_id in "${!assets_hsa[@]}"; do
+                    generate_account_declaration "$sfin_id"
+                    echo ""
+                done
+
+                for sfin_id in "${!assets_investments[@]}"; do
+                    generate_account_declaration "$sfin_id"
+                    echo ""
+                done
+
+                for sfin_id in "${!assets_other[@]}"; do
+                    generate_account_declaration "$sfin_id"
+                    echo ""
+                done
+
+                tail -n +${insert_line} "$JOURNAL_FILE"
+            } > "$temp_file"
+            cp "$temp_file" "$JOURNAL_FILE"
+        fi
+    fi
+
+    # Add liabilities
+    if [ ${#liabilities_cards[@]} -gt 0 ] || [ ${#liabilities_loans[@]} -gt 0 ]; then
+        # Find the line after the last existing liability credit card or before "; Income Accounts"
+        local insert_line=$(grep -n "^; Income Accounts" "$JOURNAL_FILE" | cut -d: -f1)
+
+        if [ -n "$insert_line" ]; then
+            {
+                head -n $((insert_line - 1)) "$JOURNAL_FILE"
+
+                for sfin_id in "${!liabilities_cards[@]}"; do
+                    generate_account_declaration "$sfin_id"
+                    echo ""
+                done
+
+                for sfin_id in "${!liabilities_loans[@]}"; do
+                    generate_account_declaration "$sfin_id"
+                    echo ""
+                done
+
+                tail -n +${insert_line} "$JOURNAL_FILE"
+            } > "$temp_file"
+            cp "$temp_file" "$JOURNAL_FILE"
+        fi
+    fi
+
+    rm -f "$temp_file"
+    echo "✓ Added ${#accounts_to_add[@]} account(s) to $JOURNAL_FILE"
+}
+
+# Check if all SimpleFin accounts exist in journal
+echo "Checking if all SimpleFin accounts exist in journal..."
+MISSING_IN_JOURNAL=""
+MISSING_COUNT=0
+while IFS= read -r sfin_id; do
+    if ! echo "$JOURNAL_IDS" | grep -q "^$sfin_id$"; then
+        MISSING_IN_JOURNAL="${MISSING_IN_JOURNAL}${sfin_id}\n"
+        MISSING_COUNT=$((MISSING_COUNT + 1))
+        # Get account name from SimpleFin data
+        ACCOUNT_NAME=$(echo "$SIMPLEFIN_DATA" | jq -r --arg id "$sfin_id" '.accounts[] | select(.id == $id) | .name')
+        ORG_NAME=$(echo "$SIMPLEFIN_DATA" | jq -r --arg id "$sfin_id" '.accounts[] | select(.id == $id) | .org.name')
+        echo "  ❌ MISSING: $sfin_id ($ORG_NAME - $ACCOUNT_NAME)"
+    fi
+done <<< "$SIMPLEFIN_IDS"
+
+if [ -z "$MISSING_IN_JOURNAL" ]; then
+    echo "  ✓ All SimpleFin accounts exist in journal"
+else
+    if [ "$ADD_ACCOUNTS" = true ]; then
+        echo
+        echo "Adding missing accounts to journal..."
+        add_accounts_to_journal
+    fi
+fi
+echo
+
+# Check if any journal accounts are not in SimpleFin
+echo "Checking for journal accounts not in SimpleFin..."
+ORPHANED_IN_JOURNAL=""
+while IFS= read -r journal_id; do
+    if ! echo "$SIMPLEFIN_IDS" | grep -q "^$journal_id$"; then
+        ORPHANED_IN_JOURNAL="${ORPHANED_IN_JOURNAL}${journal_id}\n"
+        # Find the account name in journal (line before simplefin-id)
+        ACCOUNT_LINE=$(grep -B 1 "simplefin-id $journal_id" "$JOURNAL_FILE" | head -1 | sed 's/^account //')
+        echo "  ⚠️  ORPHANED: $journal_id (Account: $ACCOUNT_LINE)"
+    fi
+done <<< "$JOURNAL_IDS"
+
+if [ -z "$ORPHANED_IN_JOURNAL" ]; then
+    echo "  ✓ No orphaned accounts in journal"
+fi
+echo
+
+# Summary
+echo "Summary:"
+echo "--------"
+echo "SimpleFin accounts: $(echo "$SIMPLEFIN_IDS" | wc -l | xargs)"
+echo "Journal accounts with simplefin-id: $(echo "$JOURNAL_IDS" | wc -l | xargs)"
+
+if [ -n "$MISSING_IN_JOURNAL" ]; then
+    echo
+    if [ "$ADD_ACCOUNTS" = true ]; then
+        echo "✓ Added $MISSING_COUNT SimpleFin account(s) to journal"
+    else
+        echo "⚠️  Action required: $MISSING_COUNT SimpleFin account(s) need to be added to journal"
+        echo "    Run with --add flag to automatically add them: bin/verify-simplefin-accounts --add"
+    fi
+fi
+
+if [ -n "$ORPHANED_IN_JOURNAL" ]; then
+    echo
+    echo "⚠️  Action required: $(echo -e "$ORPHANED_IN_JOURNAL" | grep -c "ACT-") journal account(s) with simplefin-id are not in SimpleFin"
+fi
+
+if [ -z "$MISSING_IN_JOURNAL" ] && [ -z "$ORPHANED_IN_JOURNAL" ]; then
+    echo
+    echo "✓ All accounts verified successfully"
+    exit 0
+else
+    exit 1
+fi
