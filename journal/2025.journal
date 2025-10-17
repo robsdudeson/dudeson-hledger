@@ -5,19 +5,19 @@
 
 2025-10-16 * Opening Balance | Chase Income Checking
     ; simplefin-id: ACT-22d80af0-19ab-482d-a43e-1c3e34427198
-    Assets:Checking:Chase:Income                      $1,665.03
+    Assets:Checking:Chase:Income  $1,665.03
     Equity:Opening
 
 2025-10-16 * Opening Balance | Chase Sapphire Preferred
     ; simplefin-id: ACT-1557581d-31d5-4ff4-872e-4374f4e57395
     ; Credit card balance (negative = owed)
-    Liabilities:CreditCards:Chase:SapphirePreferred    $925.99
+    Liabilities:CreditCards:Chase:SapphirePreferred  $925.99
     Equity:Opening
 
 2025-10-16 * Opening Balance | Chase Amazon Card
     ; simplefin-id: ACT-ab7e2792-8ba2-438e-adad-be64d94d3428
     ; Credit card balance (negative = owed)
-    Liabilities:CreditCards:Chase:Amazon               $315.62
+    Liabilities:CreditCards:Chase:Amazon  $315.62
     Equity:Opening
 
 ; Add your transactions below this line

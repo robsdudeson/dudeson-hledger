@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# Pre-commit hook for hledger journal validation and formatting
+# Only runs when .journal files are staged
+
+set -e
+
+# Get list of staged .journal files
+STAGED_JOURNAL_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.journal$' || true)
+
+# Exit early if no .journal files are staged
+if [ -z "$STAGED_JOURNAL_FILES" ]; then
+    exit 0
+fi
+
+echo "🔍 Processing staged .journal files..."
+
+# Check if hledger is installed
+if ! command -v hledger &> /dev/null; then
+    echo "❌ Error: hledger is not installed"
+    echo "   Please install hledger to validate journal files"
+    exit 1
+fi
+
+# Check if hledger-fmt is installed
+HAS_HLEDGER_FMT=0
+if command -v hledger-fmt &> /dev/null; then
+    HAS_HLEDGER_FMT=1
+    echo "📝 Formatting journal files with hledger-fmt..."
+fi
+
+# Format and validate each staged journal file
+VALIDATION_FAILED=0
+
+for file in $STAGED_JOURNAL_FILES; do
+    echo "  Processing: $file"
+
+    # Format with hledger-fmt if available
+    if [ $HAS_HLEDGER_FMT -eq 1 ]; then
+        if hledger-fmt --fix "$file" 2>/dev/null; then
+            # Re-stage the formatted file
+            git add "$file"
+            echo "    ✅ Formatted and fixed"
+        else
+            echo "    ⚠️  Warning: hledger-fmt failed, skipping formatting"
+        fi
+    fi
+
+    # Run hledger check on the main journal (which includes all journals)
+    # Using journal/main.journal as the entry point
+    if ! hledger -f journal/main.journal check 2>/dev/null; then
+        echo "    ❌ Validation failed for journal structure"
+        VALIDATION_FAILED=1
+
+        # Show detailed error
+        echo ""
+        echo "    Detailed error:"
+        hledger -f journal/main.journal check 2>&1 | sed 's/^/      /'
+        echo ""
+    else
+        echo "    ✅ Valid"
+    fi
+done
+
+# Exit with error if any validation failed
+if [ $VALIDATION_FAILED -eq 1 ]; then
+    echo ""
+    echo "❌ Pre-commit hook failed: Journal validation errors found"
+    echo "   Please fix the errors above before committing"
+    exit 1
+fi
+
+if [ $HAS_HLEDGER_FMT -eq 1 ]; then
+    echo "✅ All staged .journal files formatted and validated"
+else
+    echo "✅ All staged .journal files validated"
+    echo "💡 Tip: Install hledger-fmt for automatic formatting"
+    echo "   https://github.com/mondeja/hledger-fmt"
+fi
+exit 0

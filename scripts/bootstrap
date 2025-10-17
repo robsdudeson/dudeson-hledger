@@ -5,9 +5,15 @@ set -e
 echo "=== hledger Environment Bootstrap ==="
 echo ""
 
+mise install
+
+eval $(mise activate bash)
+
 # Install hledger and related tools using yay
 echo "Installing hledger binaries..."
 yay -Sy --needed hledger-bin hledger-web-bin hledger-ui-bin jq
+
+mise exec -- cargo install hledger-fmt
 
 echo ""
 echo "Downloading SimpleFIN scripts from GitHub..."
