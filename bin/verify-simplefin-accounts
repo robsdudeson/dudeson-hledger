@@ -113,12 +113,15 @@ get_account_info() {
     echo "$account_type|$category|$org_clean|$name|$org"
 }
 
-# Function to generate account declaration
+# Function to generate account declaration with opening balance
 generate_account_declaration() {
     local sfin_id="$1"
     local info=$(get_account_info "$sfin_id")
 
     IFS='|' read -r account_type category org_clean name org <<< "$info"
+
+    # Get balance from SimpleFin data
+    local balance=$(echo "$SIMPLEFIN_DATA" | jq -r --arg id "$sfin_id" '.accounts[] | select(.id == $id) | .balance')
 
     # Sanitize account name for path
     local name_clean=$(echo "$name" | sed 's/[^a-zA-Z0-9 ]//g' | sed 's/ /_/g' | cut -c1-50)
@@ -126,12 +129,54 @@ generate_account_declaration() {
     # Build account path
     local account_path="${account_type}:${category}:${org_clean}:${name_clean}"
 
-    # Generate the declaration
+    # Generate the declaration (just the account definition, not the balance transaction)
     cat << EOF
 account ${account_path}
   description ${org} - ${name}
   simplefin-id ${sfin_id}
 EOF
+}
+
+# Function to generate opening balance transaction
+generate_opening_balance() {
+    local sfin_id="$1"
+    local info=$(get_account_info "$sfin_id")
+
+    IFS='|' read -r account_type category org_clean name org <<< "$info"
+
+    # Get balance from SimpleFin data
+    local balance=$(echo "$SIMPLEFIN_DATA" | jq -r --arg id "$sfin_id" '.accounts[] | select(.id == $id) | .balance')
+
+    # Sanitize account name for path
+    local name_clean=$(echo "$name" | sed 's/[^a-zA-Z0-9 ]//g' | sed 's/ /_/g' | cut -c1-50)
+
+    # Build account path
+    local account_path="${account_type}:${category}:${org_clean}:${name_clean}"
+
+    # Get current date for opening balance
+    local today=$(date +%Y-%m-%d)
+
+    # Generate opening balance transaction
+    if [[ "$account_type" == "Liabilities" ]]; then
+        # For liabilities, balance is negative in SimpleFin but we track as positive (amount owed)
+        local balance_abs=$(echo "$balance" | sed 's/^-//')
+        cat << EOF
+
+$today * Opening Balance | $org - $name
+    ; simplefin-id: $sfin_id
+    $account_path  \$$balance_abs
+    Equity:Opening
+EOF
+    else
+        # For assets, use balance as-is
+        cat << EOF
+
+$today * Opening Balance | $org - $name
+    ; simplefin-id: $sfin_id
+    $account_path  \$$balance
+    Equity:Opening
+EOF
+    fi
 }
 
 # Function to add accounts to journal
@@ -253,6 +298,26 @@ add_accounts_to_journal() {
 
     rm -f "$temp_file"
     echo "✓ Added ${#accounts_to_add[@]} account(s) to $JOURNAL_FILE"
+
+    # Now add opening balance transactions to 2025.journal
+    local journal_2025="$PROJECT_ROOT/journal/2025.journal"
+    if [ -f "$journal_2025" ]; then
+        echo "Adding opening balance transactions to $journal_2025..."
+
+        {
+            echo ""
+            echo "; Opening Balances for newly added SimpleFin accounts (added $(date +%Y-%m-%d))"
+            echo ""
+
+            for sfin_id in "${accounts_to_add[@]}"; do
+                generate_opening_balance "$sfin_id"
+            done
+        } >> "$journal_2025"
+
+        echo "✓ Added ${#accounts_to_add[@]} opening balance transaction(s) to $journal_2025"
+    else
+        echo "Warning: $journal_2025 not found, skipping opening balance transactions"
+    fi
 }
 
 # Check if all SimpleFin accounts exist in journal

@@ -153,6 +153,18 @@ done < "$PROJECT_ROOT/journal/accounts.journal"
 
 echo "✓ Loaded ${#account_map[@]} account mappings"
 
+# Build a set of existing transaction IDs from the journal
+echo "Checking for existing transactions..."
+existing_txn_ids=()
+if [ -f "$PROJECT_ROOT/journal/2025.journal" ]; then
+    while IFS= read -r line; do
+        if [[ "$line" =~ simplefin-txn-id:[[:space:]]*(TRN-[a-f0-9-]+) ]]; then
+            existing_txn_ids+=("${BASH_REMATCH[1]}")
+        fi
+    done < "$PROJECT_ROOT/journal/2025.journal"
+fi
+echo "✓ Found ${#existing_txn_ids[@]} existing transactions in journal"
+
 # Process each account's transactions
 echo ""
 echo "Converting to hledger journal format..."
@@ -161,6 +173,8 @@ echo ""
 # Read CSV and group by account
 current_acct_id=""
 temp_csv=$(mktemp)
+txn_count=0
+skipped_count=0
 
 while IFS=, read -r field1 field2 field3 field4 field5 field6; do
     # Remove quotes
@@ -204,6 +218,12 @@ while IFS=, read -r field1 field2 field3 field4 field5 field6; do
         memo="$field5"
         txn_id="$field6"
 
+        # Check if transaction already exists in journal
+        if printf '%s\n' "${existing_txn_ids[@]}" | grep -q "^$txn_id$"; then
+            skipped_count=$((skipped_count + 1))
+            continue
+        fi
+
         # Determine transaction description
         if [ -n "$payee" ]; then
             txn_desc="$payee"
@@ -244,6 +264,57 @@ while IFS=, read -r field1 field2 field3 field4 field5 field6; do
         fi
 
         echo ""
+        txn_count=$((txn_count + 1))
+    fi
+done < "$CSV_FILE"
+
+# Add balance assertions at the end
+echo ""
+echo "; Balance Assertions (from SimpleFin as of import)"
+echo "; These should match the current account balances after importing all transactions"
+echo ""
+
+# Re-read CSV to get account balances
+current_acct_id=""
+while IFS=, read -r field1 field2 field3 field4 field5 field6; do
+    # Remove quotes
+    field1=$(echo "$field1" | sed 's/^"//;s/"$//')
+    field2=$(echo "$field2" | sed 's/^"//;s/"$//')
+    field3=$(echo "$field3" | sed 's/^"//;s/"$//')
+    field4=$(echo "$field4" | sed 's/^"//;s/"$//')
+    field5=$(echo "$field5" | sed 's/^"//;s/"$//')
+    field6=$(echo "$field6" | sed 's/^"//;s/"$//')
+
+    if [ "$field1" == "account" ]; then
+        # This is an account header: account,balance,org,name,currency,acctid
+        current_acct_id="$field6"
+        balance="$field2"
+        org="$field3"
+        acct_name="$field4"
+        hledger_account="${account_map[$current_acct_id]}"
+
+        if [ -z "$hledger_account" ]; then
+            continue
+        fi
+
+        # Get the latest transaction date from the import
+        latest_date=$(date +%Y-%m-%d)
+
+        echo "; $org - $acct_name"
+        echo "$latest_date * Balance Assertion"
+        echo "    ; SimpleFin balance as of import"
+        echo "    ; Account ID: $current_acct_id"
+
+        # For liabilities, balance is negative in SimpleFin but we track as positive
+        if [[ "$hledger_account" =~ ^Liabilities: ]]; then
+            # Remove negative sign for liability balance assertion
+            balance_abs=$(echo "$balance" | sed 's/^-//')
+            echo "    $hledger_account  \$0 = \$$balance_abs"
+        else
+            # Assets: use balance as-is
+            echo "    $hledger_account  \$0 = \$$balance"
+        fi
+        echo ""
     fi
 done < "$CSV_FILE"
 
@@ -254,8 +325,14 @@ echo "Summary:"
 echo "--------"
 echo "JSON file: $JSON_FILE"
 echo "CSV file:  $CSV_FILE"
+echo "Transactions imported: $txn_count"
+echo "Transactions skipped (already in journal): $skipped_count"
 echo ""
-echo "To import these transactions into your journal:"
-echo "  1. Review the output above"
-echo "  2. Copy transactions to journal/2025.journal"
-echo "  3. Adjust expense categories as needed"
+if [ "$txn_count" -gt 0 ]; then
+    echo "To import these transactions into your journal:"
+    echo "  1. Review the output above"
+    echo "  2. Copy transactions to journal/2025.journal"
+    echo "  3. Adjust expense categories as needed"
+else
+    echo "✓ No new transactions to import (all transactions already exist in journal)"
+fi
