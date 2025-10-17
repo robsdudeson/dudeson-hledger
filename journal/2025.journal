@@ -21,3 +21,425 @@
     Equity:Opening
 
 ; Add your transactions below this line
+
+; Account: Assets:Checking:Chase:Income
+; SimpleFin: Chase Bank - Income (ACT-22d80af0-19ab-482d-a43e-1c3e34427198)
+; Balance: $1030.26
+
+2025-10-16 * Earnhart Hill Re Utility Tel
+    ; simplefin-txn-id: TRN-91b6b059-0716-4c0a-ac66-7fe62cdf12d4
+    Assets:Checking:Chase:Income  -$66.30
+    Expenses:Other
+
+2025-10-16 * The Home Depot Credit Card by Citi
+    ; simplefin-txn-id: TRN-472c4585-0b6a-4ac2-8375-59791209608d
+    Assets:Checking:Chase:Income  -$136.50
+    Expenses:Other
+
+2025-10-16 * Target Credit Card
+    ; simplefin-txn-id: TRN-1b85c7dc-32d3-4a28-a5af-da31091cc0b2
+    Assets:Checking:Chase:Income  -$104.50
+    Expenses:Other
+
+2025-10-16 * Online Payment to Wells Fargo
+    ; simplefin-txn-id: TRN-7914735f-7abe-413a-8291-3c4720507450
+    Assets:Checking:Chase:Income  -$97.50
+    Expenses:Other
+
+2025-10-16 * Capital One Credit Card
+    ; simplefin-txn-id: TRN-f9078bb3-642b-49f9-b736-1fe47584a51a
+    Assets:Checking:Chase:Income  -$97.50
+    Expenses:Other
+
+2025-10-16 * Capital One Credit Card
+    ; simplefin-txn-id: TRN-1dfce574-fbfd-4b2a-9cc6-ce8de1c777bc
+    Assets:Checking:Chase:Income  -$31.00
+    Expenses:Other
+
+2025-10-16 * Synchrony Credit Card
+    ; simplefin-txn-id: TRN-a2ee8254-aace-43b0-a800-21aa72677235
+    Assets:Checking:Chase:Income  -$25.00
+    Expenses:Other
+
+2025-10-16 * PenFed Credit Card Payment
+    ; simplefin-txn-id: TRN-a5242f76-0f3b-4834-b6da-22ed9f594b9d
+    Assets:Checking:Chase:Income  -$15.00
+    Expenses:Other
+
+2025-10-16 * Capital One Credit Card Payment
+    ; simplefin-txn-id: TRN-43d5acc4-4cf1-44c1-ab4d-789d64aaed1b
+    Assets:Checking:Chase:Income  -$29.00
+    Expenses:Other
+
+2025-10-15 * Kroger
+    ; simplefin-txn-id: TRN-7fe9be16-af12-4fc4-9167-66cded71539a
+    Assets:Checking:Chase:Income  -$7.80
+    Expenses:Other
+
+2025-10-15 * PayPal Credit Card Payment
+    ; simplefin-txn-id: TRN-51fa3706-01fd-41c9-8fa8-cfc3a02666fd
+    Assets:Checking:Chase:Income  -$73.50
+    Expenses:Other
+
+2025-10-15 * American Express Credit Card
+    ; simplefin-txn-id: TRN-223a3a4e-bdfe-4966-ad6d-e45d688c1374
+    Assets:Checking:Chase:Income  -$219.00
+    Expenses:Other
+
+2025-10-15 * Online Payment to Penfed Visa Mastercard
+    ; simplefin-txn-id: TRN-583f07e8-966b-41fc-9754-3a1b2ad930ce
+    Assets:Checking:Chase:Income  -$265.00
+    Expenses:Other
+
+2025-10-15 * Department of Education
+    ; simplefin-txn-id: TRN-ce979285-d339-4fc0-9959-8a6a19e476a1
+    Assets:Checking:Chase:Income  -$377.49
+    Expenses:Other
+
+2025-10-15 * Gusto
+    ; simplefin-txn-id: TRN-bdbc7fed-7049-4864-8e54-c30f32c2fb1f
+    Assets:Checking:Chase:Income  $1700.00
+    Income:Other
+
+2025-10-16 * Schieber Family Pharma
+    ; simplefin-txn-id: TRN-e0c7e46b-0c79-45da-9230-79317c43f21b
+    Assets:Checking:Chase:Income  -$12.00
+    Expenses:Other
+
+2025-10-16 * McDonald's
+    ; simplefin-txn-id: TRN-844e7726-c506-4691-a5f6-94f0f97165ca
+    Assets:Checking:Chase:Income  -$9.48
+    Expenses:Other
+
+2025-10-16 * Costco
+    ; simplefin-txn-id: TRN-03f944ff-255f-4cfe-9e8b-cd84c31204c6
+    Assets:Checking:Chase:Income  -$7.99
+    Expenses:Other
+
+2025-10-16 * Costco
+    ; simplefin-txn-id: TRN-86209a41-a601-47d0-9e93-3656eae7280c
+    Assets:Checking:Chase:Income  -$3.00
+    Expenses:Other
+
+2025-10-14 * American Express Credit Card
+    ; simplefin-txn-id: TRN-006cb95d-4b29-462e-b564-4cee3efeceda
+    Assets:Checking:Chase:Income  -$152.05
+    Expenses:Other
+
+2025-10-14 * Capital One Credit Card Payment
+    ; simplefin-txn-id: TRN-7e863897-a63e-4673-b64e-678beca802d4
+    Assets:Checking:Chase:Income  -$104.00
+    Expenses:Other
+
+2025-10-14 * PayPal Purchase
+    ; simplefin-txn-id: TRN-1b3a4be9-90f5-4f87-b881-a0b211b0a430
+    Assets:Checking:Chase:Income  -$35.50
+    Expenses:Other
+
+2025-10-14 * PayPal Purchase
+    ; simplefin-txn-id: TRN-9509c397-a912-4022-8021-9e91fc46dfcf
+    Assets:Checking:Chase:Income  -$108.98
+    Expenses:Other
+
+2025-10-14 * PayPal Pay in 4
+    ; simplefin-txn-id: TRN-f01a75a2-e520-4bb4-88d3-71ff235ea96e
+    Assets:Checking:Chase:Income  -$115.14
+    Expenses:Other
+
+2025-10-15 * Schieber Family Pharma
+    ; simplefin-txn-id: TRN-3a69697d-8dc5-4116-9549-37a028b0bb12
+    Assets:Checking:Chase:Income  -$23.00
+    Expenses:Other
+
+2025-10-15 * Kroger
+    ; simplefin-txn-id: TRN-001fc6a5-0adb-45a6-b74f-ad0d3d587e4d
+    Assets:Checking:Chase:Income  -$75.32
+    Expenses:Other
+
+2025-10-14 * Chipotle
+    ; simplefin-txn-id: TRN-80b06521-0001-45aa-b395-22a1d54f6d38
+    Assets:Checking:Chase:Income  -$44.84
+    Expenses:Other
+
+2025-10-14 * Kroger
+    ; simplefin-txn-id: TRN-3b1328fa-ede7-4fc5-b795-a2c41564f3ad
+    Assets:Checking:Chase:Income  -$59.35
+    Expenses:Other
+
+2025-10-14 * Ashville Beverag
+    ; simplefin-txn-id: TRN-e14022c0-91a8-47d7-b661-85753c19aa1e
+    Assets:Checking:Chase:Income  -$64.49
+    Expenses:Other
+
+2025-10-14 * Zelle Transfer to Stephanie Jpm99bqnz2z9
+    ; simplefin-txn-id: TRN-3efc6eb4-1c2b-4b97-821b-2045c6c740d0
+    Assets:Checking:Chase:Income  -$200.00
+    Expenses:Other
+
+2025-10-14 * Northland Ice Skating
+    ; simplefin-txn-id: TRN-eac7b1ff-90d5-4bb3-af06-8a099b984479
+    Assets:Checking:Chase:Income  -$5.00
+    Expenses:Other
+
+2025-10-14 * ATM Withdrawal
+    ; simplefin-txn-id: TRN-6fdc1737-30b5-446b-a4fa-90d18e6b8e21
+    Assets:Checking:Chase:Income  -$60.00
+    Expenses:Other
+
+2025-10-14 * Queen City Sportspl
+    ; simplefin-txn-id: TRN-49967167-8035-4952-b45a-f8135c714476
+    Assets:Checking:Chase:Income  -$5.82
+    Expenses:Other
+
+2025-10-14 * Rhinegeist Brewery
+    ; simplefin-txn-id: TRN-dcf2c4c6-b383-47e0-a05b-ebdd19dd7715
+    Assets:Checking:Chase:Income  -$65.72
+    Expenses:Other
+
+2025-10-14 * Kroger
+    ; simplefin-txn-id: TRN-85ce9686-6e1a-45cf-bff4-304cdd0c8bc5
+    Assets:Checking:Chase:Income  -$25.26
+    Expenses:Other
+
+2025-10-14 * Northland Ice Skating
+    ; simplefin-txn-id: TRN-bd9c22e8-c297-408d-ab21-32e0c582cda8
+    Assets:Checking:Chase:Income  -$9.50
+    Expenses:Other
+
+; Account: Liabilities:CreditCards:Capital_One:VentureOne
+; SimpleFin: Capital One - VentureOne (ACT-fb5ea34b-5356-4222-8114-b03c815e8b24)
+; Balance: $-2864.45
+
+2025-10-11 * Capital One Credit Card
+    ; simplefin-txn-id: TRN-c87066b6-0f70-4a0d-9af0-482302eb3894
+    Liabilities:CreditCards:Capital_One:VentureOne  -$104.00
+    Assets:Checking:Chase:Income
+
+; Account: Liabilities:CreditCards:Capital_One:Kohls_Rewards_Visa
+; SimpleFin: Capital One - Kohl's Rewards Visa (ACT-8b8388aa-6b0e-42cd-8013-47e08ced7db7)
+; Balance: $-265.02
+
+2025-10-16 * Capital One Credit Card
+    ; simplefin-txn-id: TRN-8668282e-79a0-446b-870c-7a0963f1a184
+    Liabilities:CreditCards:Capital_One:Kohls_Rewards_Visa  -$29.00
+    Assets:Checking:Chase:Income
+
+; Account: Assets:Checking:Capital_One:360_Checking
+; SimpleFin: Capital One - 360 Checking (ACT-73c68e5e-bdd8-48e0-bf55-33abe40fd255)
+; Balance: $98.40
+
+2025-10-16 * To Robby Spending
+    ; simplefin-txn-id: TRN-80e13236-b71e-45e5-a750-1cbd803c7fc6
+    Assets:Checking:Capital_One:360_Checking  -$20.00
+    Expenses:Other
+
+2025-10-15 * Gusto
+    ; simplefin-txn-id: TRN-2e8158ef-eaff-4dbf-a988-963a89da87b1
+    Assets:Checking:Capital_One:360_Checking  $118.40
+    Income:Other
+
+; Account: Assets:Checking:Capital_One:360_Checking
+; SimpleFin: Capital One - 360 Checking (ACT-e5f1e531-c40a-44e9-bc30-90045f8e88d9)
+; Balance: $23.08
+
+2025-10-16 * Deposit From Income
+    ; simplefin-txn-id: TRN-c79e3dbf-d567-43a6-a4e1-4cffaf8db71c
+    Assets:Checking:Capital_One:360_Checking  $20.00
+    Income:Other
+
+2025-10-13 * Sugar N Spice Su
+    ; simplefin-txn-id: TRN-967f68a1-6522-4201-bcc8-481cb5f0aefa
+    Assets:Checking:Capital_One:360_Checking  -$67.88
+    Expenses:Other
+
+2025-10-12 * Triple Play Pizza
+    ; simplefin-txn-id: TRN-c1801f67-32ce-4fb9-991b-d4024e5408e6
+    Assets:Checking:Capital_One:360_Checking  -$32.94
+    Expenses:Other
+
+; Account: Assets:Checking:Capital_One:360_Checking
+; SimpleFin: Capital One - 360 Checking (ACT-bbdabf55-1f60-4f0b-bc30-0ed554d15b48)
+; Balance: $700.93
+
+2025-10-16 * Betterment
+    ; simplefin-txn-id: TRN-5a683591-49d9-4e68-8e26-af2a6d6810a4
+    Assets:Checking:Capital_One:360_Checking  -$75.00
+    Expenses:Other
+
+2025-10-16 * The Ohio State
+    ; simplefin-txn-id: TRN-887d3edc-7962-4306-8788-c0a1b72c963a
+    Assets:Checking:Capital_One:360_Checking  $700.00
+    Income:Other
+
+2025-10-15 * Ohiohealth Chiller Eas
+    ; simplefin-txn-id: TRN-ecc76f88-6583-4f5e-b4b9-40b9877358d5
+    Assets:Checking:Capital_One:360_Checking  -$3.00
+    Expenses:Other
+
+2025-10-15 * Rivers Coffee House
+    ; simplefin-txn-id: TRN-2fb9577d-fe44-442d-95ae-566bc7d3c5b4
+    Assets:Checking:Capital_One:360_Checking  -$17.29
+    Expenses:Other
+
+2025-10-15 * Kroger
+    ; simplefin-txn-id: TRN-dd691c30-0e41-47fb-bc3a-ed769167008a
+    Assets:Checking:Capital_One:360_Checking  -$99.53
+    Expenses:Other
+
+2025-10-13 * United Dairy Farmers
+    ; simplefin-txn-id: TRN-b57f5f79-71b3-4b70-9ff1-44220be8ef74
+    Assets:Checking:Capital_One:360_Checking  -$36.48
+    Expenses:Other
+
+2025-10-12 * Stephanie M Thompson
+    ; simplefin-txn-id: TRN-51c119d4-00c7-4e90-9125-d79f5da2c5d1
+    Assets:Checking:Capital_One:360_Checking  $200.00
+    Income:Other
+
+2025-10-11 * Cazuelas
+    ; simplefin-txn-id: TRN-a4eb12ce-1af8-425b-938c-d8906e6968cf
+    Assets:Checking:Capital_One:360_Checking  -$10.50
+    Expenses:Other
+
+; Account: Assets:Savings:Capital_One:360_Performance_Savings
+; SimpleFin: Capital One - 360 Performance Savings (ACT-4b923f8a-2f68-4b80-a45d-cef2d009c576)
+; Balance: $101.41
+
+2025-10-17 * The Ohio State
+    ; simplefin-txn-id: TRN-2997e998-5e8b-47e7-b2cc-855297b200cb
+    Assets:Savings:Capital_One:360_Performance_Savings  $100.00
+    Income:Other
+
+; Account: Assets:Other:Vanguard_Retirement__Ascensus:Account
+; SimpleFin: Vanguard Retirement - Ascensus - Account (ACT-1163d76c-19fc-40ad-817e-556b1abfbbc2)
+; Balance: $76825.12
+
+2025-10-13 * Loan Repayment Int
+    ; simplefin-txn-id: TRN-c89d80b0-482a-4d87-8036-cd6f10272a7a
+    Assets:Other:Vanguard_Retirement__Ascensus:Account  $22.33
+    Income:Other
+
+2025-10-13 * Loan Repayment Prin
+    ; simplefin-txn-id: TRN-bb47587f-4de3-4c12-a554-97ae06c69075
+    Assets:Other:Vanguard_Retirement__Ascensus:Account  $321.44
+    Income:Other
+
+2025-10-13 * Contribution
+    ; simplefin-txn-id: TRN-a32daa4b-6508-4675-9a6f-23a175e88963
+    Assets:Other:Vanguard_Retirement__Ascensus:Account  $203.37
+    Income:Other
+
+; Account: Liabilities:CreditCards:American_Express:Platinum_Card
+; SimpleFin: American Express - Platinum Card® (ACT-2fc61a54-9004-4a99-8fdf-ebcefd306421)
+; Balance: $-11200.66
+
+2025-10-16 * Electronic Payment
+    ; simplefin-txn-id: TRN-3757d611-070a-465c-8871-6e110cf7da39
+    Liabilities:CreditCards:American_Express:Platinum_Card  -$219.00
+    Assets:Checking:Chase:Income
+
+2025-10-14 * Payment
+    ; simplefin-txn-id: TRN-b984af32-af06-424e-9020-3c34ccc71913
+    Liabilities:CreditCards:American_Express:Platinum_Card  -$152.05
+    Assets:Checking:Chase:Income
+
+; Account: Liabilities:CreditCards:American_Express:Amex_EveryDay_Preferred
+; SimpleFin: American Express - Amex EveryDay® Preferred (ACT-8efb9414-1753-44cb-9af7-46d01f976360)
+; Balance: $-95.00
+
+2025-10-15 * Renewal Membership Fee
+    ; simplefin-txn-id: TRN-18bce76e-e516-41fb-a482-5c4d3c7ace7f
+    Expenses:Other  $95.00
+    Liabilities:CreditCards:American_Express:Amex_EveryDay_Preferred
+
+; Account: Liabilities:Loans:CME_Federal_Credit_Union:HELOC_PREMIUM_PLUS
+; SimpleFin: CME Federal Credit Union - HELOC PREMIUM PLUS (ACT-78600186-6de3-4c8f-b047-50ba40c0e10e)
+; Balance: $-99419.71
+
+2025-10-16 * Loan Payment from Share 02
+    ; simplefin-txn-id: TRN-45c234e5-a7ae-4498-83c2-027819cf07b8
+    Liabilities:Loans:CME_Federal_Credit_Union:HELOC_PREMIUM_PLUS  -$650.00
+    Assets:Checking:Chase:Income
+
+; Account: Liabilities:Loans:CME_Federal_Credit_Union:2020_COACHMEN_BY_FOREST_RIVER
+; SimpleFin: CME Federal Credit Union - 2020 COACHMEN BY FOREST RIVER (ACT-67eef1ce-9638-490a-8639-f06810c78687)
+; Balance: $-16254.23
+
+2025-10-16 * Loan Payment from Share 02
+    ; simplefin-txn-id: TRN-15aa0eeb-80e4-4c60-b126-a43dd4c5cacf
+    Liabilities:Loans:CME_Federal_Credit_Union:2020_COACHMEN_BY_FOREST_RIVER  -$194.86
+    Assets:Checking:Chase:Income
+
+; Account: Assets:Checking:CME_Federal_Credit_Union:CME_BASIC_CHECKING
+; SimpleFin: CME Federal Credit Union - CME BASIC CHECKING (ACT-a2c3ca78-0b57-425c-8d19-ca86788cf99a)
+; Balance: $596.48
+
+2025-10-16 * Vinton County Ba
+    ; simplefin-txn-id: TRN-ec32842d-2f6b-43c1-b119-471d640c9990
+    Assets:Checking:CME_Federal_Credit_Union:CME_BASIC_CHECKING  -$582.66
+    Expenses:Other
+
+2025-10-16 * Loan Payment
+    ; simplefin-txn-id: TRN-1ac92715-03dc-4d59-81c6-695cc022388c
+    Assets:Checking:CME_Federal_Credit_Union:CME_BASIC_CHECKING  -$276.00
+    Expenses:Other
+
+2025-10-16 * Loan Payment
+    ; simplefin-txn-id: TRN-47ae8fa4-f2a3-491e-8476-f81b89c22c28
+    Assets:Checking:CME_Federal_Credit_Union:CME_BASIC_CHECKING  -$194.86
+    Expenses:Other
+
+2025-10-16 * Loan Payment
+    ; simplefin-txn-id: TRN-ad918299-6ba7-4e5b-b528-e7a73ff71d2e
+    Assets:Checking:CME_Federal_Credit_Union:CME_BASIC_CHECKING  -$650.00
+    Expenses:Other
+
+2025-10-15 * Gusto
+    ; simplefin-txn-id: TRN-33570efb-30ea-4b28-9f1f-b8d7407508a1
+    Assets:Checking:CME_Federal_Credit_Union:CME_BASIC_CHECKING  $2300.00
+    Income:Other
+
+2025-10-15 * Loan Payment
+    ; simplefin-txn-id: TRN-68ef4a10-cea0-420c-8112-a1c7aa98f760
+    Assets:Checking:CME_Federal_Credit_Union:CME_BASIC_CHECKING  -$57.41
+    Expenses:Other
+
+; Account: Liabilities:CreditCards:CME_Federal_Credit_Union:PLATINUM_REWARDS_MASTERCARD
+; SimpleFin: CME Federal Credit Union - PLATINUM REWARDS MASTERCARD (ACT-bd8e3073-ba02-4799-9a88-1eb0668618ad)
+; Balance: $-14846.62
+
+2025-10-16 * Credit Card Payment from Share 02
+    ; simplefin-txn-id: TRN-3f20414f-34ef-4370-8f1b-1833a6cc8b1f
+    Liabilities:CreditCards:CME_Federal_Credit_Union:PLATINUM_REWARDS_MASTERCARD  -$276.00
+    Assets:Checking:Chase:Income
+
+2025-10-13 * Sportdog Brand Petsafe Way Knoxvi Loan Advance Credit
+    ; simplefin-txn-id: TRN-8f6f0082-106d-4643-8495-46191b9c61fe
+    Expenses:Other  $127.17
+    Liabilities:CreditCards:CME_Federal_Credit_Union:PLATINUM_REWARDS_MASTERCARD
+
+2025-10-12 * Amazon Prime Membership
+    ; simplefin-txn-id: TRN-780a02f8-680f-4ee4-8eb6-d0b33804e814
+    Expenses:Other  $16.15
+    Liabilities:CreditCards:CME_Federal_Credit_Union:PLATINUM_REWARDS_MASTERCARD
+
+; Account: Liabilities:Loans:CME_Federal_Credit_Union:2021_TOYOTA_TUNDRA_CREWMAX
+; SimpleFin: CME Federal Credit Union - 2021 TOYOTA TUNDRA CREWMAX (ACT-4bc641e7-cd92-47fa-8079-8e9ab45b5e41)
+; Balance: $-32499.38
+
+2025-10-15 * Loan Payment from Share 02
+    ; simplefin-txn-id: TRN-e4db68e3-c562-42f8-9086-fa75557d969d
+    Liabilities:Loans:CME_Federal_Credit_Union:2021_TOYOTA_TUNDRA_CREWMAX  -$57.41
+    Assets:Checking:Chase:Income
+
+; Account: Liabilities:CreditCards:Chase_Bank:Disney_Premier_Visa
+; SimpleFin: Chase Bank - Disney Premier Visa (ACT-ebd2e2a5-676b-4a7a-a690-48dd1953bd13)
+; Balance: $-4208.68
+
+2025-10-13 * Drury Cincinnati North
+    ; simplefin-txn-id: TRN-4e096b56-20fd-4589-a1d6-a114a232953a
+    Expenses:Other  $186.91
+    Liabilities:CreditCards:Chase_Bank:Disney_Premier_Visa
+
+
+

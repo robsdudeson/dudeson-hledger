@@ -1,0 +1,261 @@
+#!/usr/bin/env bash
+# Import transactions from SimpleFin using simplefinjson -> simplefincsv -> hledger
+#
+# This script:
+# 1. Fetches transactions from SimpleFin as JSON
+# 2. Converts to CSV using simplefincsv
+# 3. Saves intermediate files to data/ with timestamps
+# 4. Uses hledger to convert CSV to journal format
+#
+# Usage: import-simplefin-transactions [OPTIONS]
+#
+# Options:
+#   --days DAYS          Number of days to look back (default: 30)
+#   --account ACCTID     Specific account ID (can be specified multiple times)
+#   --pending            Include pending transactions
+#   --help               Show this help message
+#
+# Examples:
+#   import-simplefin-transactions                    # Last 30 days, all accounts
+#   import-simplefin-transactions --days 7           # Last 7 days
+#   import-simplefin-transactions --days 90          # Last 90 days
+
+set -e
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Default values
+DAYS=30
+ACCOUNTS=()
+PENDING=false
+
+# Show help if requested
+if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+    grep '^#' "$0" | sed 's/^# \?//'
+    exit 0
+fi
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --days)
+            DAYS="$2"
+            shift 2
+            ;;
+        --account)
+            ACCOUNTS+=("$2")
+            shift 2
+            ;;
+        --pending)
+            PENDING=true
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1" >&2
+            exit 1
+            ;;
+    esac
+done
+
+# Create data directory if it doesn't exist
+mkdir -p "$PROJECT_ROOT/data"
+
+# Generate timestamp for filenames
+TIMESTAMP=$(date +%Y-%m-%d-%H-%M)
+
+# Build simplefinjson command
+SIMPLEFIN_ARGS="--start-date $DAYS"
+
+if [ "$PENDING" = true ]; then
+    SIMPLEFIN_ARGS="$SIMPLEFIN_ARGS --pending"
+fi
+
+for acct in "${ACCOUNTS[@]}"; do
+    SIMPLEFIN_ARGS="$SIMPLEFIN_ARGS --account $acct"
+done
+
+# File paths
+JSON_FILE="$PROJECT_ROOT/data/${TIMESTAMP}-simplefin.json"
+CSV_FILE="$PROJECT_ROOT/data/${TIMESTAMP}-simplefin.csv"
+RULES_FILE="$PROJECT_ROOT/data/simplefin.csv.rules"
+
+echo "Fetching transactions from SimpleFin (last $DAYS days)..."
+"$SCRIPT_DIR/simplefinjson" $SIMPLEFIN_ARGS > "$JSON_FILE"
+echo "✓ Saved JSON to: $JSON_FILE"
+
+echo "Converting to CSV..."
+# Convert JSON to CSV using jq (avoiding Python dependency)
+{
+    cat "$JSON_FILE" | jq -r '.accounts[] | select(.transactions | length > 0) |
+        (["account", .balance, .org.name, .name, .currency, .id] | @csv),
+        (["date", "amount", "payee", "description", "memo", "id"] | @csv),
+        (.transactions[] | [(.posted | strftime("%Y-%m-%d")), .amount, .payee, .description, .memo, .id] | @csv)'
+} > "$CSV_FILE"
+echo "✓ Saved CSV to: $CSV_FILE"
+
+# Create CSV rules file if it doesn't exist
+if [ ! -f "$RULES_FILE" ]; then
+    echo "Creating CSV rules file..."
+    cat > "$RULES_FILE" << 'EOF'
+# SimpleFin CSV import rules for hledger
+# This file defines how to convert SimpleFin CSV data to hledger journal format
+
+# Skip the account header lines and field names
+skip 2
+
+# Field assignments
+fields date, amount, payee, description, memo, id
+
+# Date format
+date-format %Y-%m-%d
+
+# Currency
+currency $
+
+# Comment with transaction ID
+comment id: %id
+
+# Account mapping - will be determined by the account-specific CSV
+# This gets set dynamically by the import script
+
+# For expenses (negative amounts), categorize to Expenses:Other
+# For income (positive amounts), categorize to Income:Other
+if %amount ^-
+    account2 Expenses:Other
+
+if %amount ^[0-9]
+    account2 Income:Other
+EOF
+    echo "✓ Created CSV rules file: $RULES_FILE"
+fi
+
+# Load account mapping from accounts.journal
+echo "Loading account mappings..."
+declare -A account_map
+
+current_account=""
+simplefin_id=""
+
+while IFS= read -r line; do
+    if [[ "$line" =~ ^account[[:space:]]+(.+)$ ]]; then
+        current_account="${BASH_REMATCH[1]}"
+    elif [[ "$line" =~ ^[[:space:]]+simplefin-id[[:space:]]+(.+)$ ]]; then
+        simplefin_id="${BASH_REMATCH[1]}"
+        if [ -n "$current_account" ] && [ -n "$simplefin_id" ]; then
+            account_map["$simplefin_id"]="$current_account"
+        fi
+        current_account=""
+        simplefin_id=""
+    fi
+done < "$PROJECT_ROOT/journal/accounts.journal"
+
+echo "✓ Loaded ${#account_map[@]} account mappings"
+
+# Process each account's transactions
+echo ""
+echo "Converting to hledger journal format..."
+echo ""
+
+# Read CSV and group by account
+current_acct_id=""
+temp_csv=$(mktemp)
+
+while IFS=, read -r field1 field2 field3 field4 field5 field6; do
+    # Remove quotes
+    field1=$(echo "$field1" | sed 's/^"//;s/"$//')
+    field2=$(echo "$field2" | sed 's/^"//;s/"$//')
+    field3=$(echo "$field3" | sed 's/^"//;s/"$//')
+    field4=$(echo "$field4" | sed 's/^"//;s/"$//')
+    field5=$(echo "$field5" | sed 's/^"//;s/"$//')
+    field6=$(echo "$field6" | sed 's/^"//;s/"$//')
+
+    if [ "$field1" == "account" ]; then
+        # This is an account header: account,balance,org,name,currency,acctid
+        current_acct_id="$field6"
+        hledger_account="${account_map[$current_acct_id]}"
+
+        if [ -z "$hledger_account" ]; then
+            echo "Warning: No mapping found for SimpleFin account $current_acct_id ($field3 - $field4)" >&2
+            continue
+        fi
+
+        echo "; Account: $hledger_account"
+        echo "; SimpleFin: $field3 - $field4 ($current_acct_id)"
+        echo "; Balance: \$$field2"
+        echo ""
+
+    elif [ "$field1" == "date" ]; then
+        # Skip field header row
+        continue
+    elif [ -n "$current_acct_id" ]; then
+        # This is a transaction row
+        hledger_account="${account_map[$current_acct_id]}"
+
+        if [ -z "$hledger_account" ]; then
+            continue
+        fi
+
+        date="$field1"
+        amount="$field2"
+        payee="$field3"
+        description="$field4"
+        memo="$field5"
+        txn_id="$field6"
+
+        # Determine transaction description
+        if [ -n "$payee" ]; then
+            txn_desc="$payee"
+        else
+            txn_desc="$description"
+        fi
+
+        # Format amount
+        amount_abs=$(echo "$amount" | sed 's/^-//')
+
+        # Output transaction
+        echo "$date * $txn_desc"
+        echo "    ; simplefin-txn-id: $txn_id"
+
+        # Determine posting based on account type and amount
+        if [[ "$hledger_account" =~ ^Assets: ]]; then
+            # Asset account
+            if [[ "$amount" =~ ^- ]]; then
+                # Negative = money out (expense)
+                echo "    $hledger_account  -\$$amount_abs"
+                echo "    Expenses:Other"
+            else
+                # Positive = money in (income)
+                echo "    $hledger_account  \$$amount_abs"
+                echo "    Income:Other"
+            fi
+        elif [[ "$hledger_account" =~ ^Liabilities: ]]; then
+            # Liability account (credit card, loan)
+            if [[ "$amount" =~ ^- ]]; then
+                # Negative = new charge (expense)
+                echo "    Expenses:Other  \$$amount_abs"
+                echo "    $hledger_account"
+            else
+                # Positive = payment (from asset)
+                echo "    $hledger_account  -\$$amount_abs"
+                echo "    Assets:Checking:Chase:Income"
+            fi
+        fi
+
+        echo ""
+    fi
+done < "$CSV_FILE"
+
+rm -f "$temp_csv"
+
+echo ""
+echo "Summary:"
+echo "--------"
+echo "JSON file: $JSON_FILE"
+echo "CSV file:  $CSV_FILE"
+echo ""
+echo "To import these transactions into your journal:"
+echo "  1. Review the output above"
+echo "  2. Copy transactions to journal/2025.journal"
+echo "  3. Adjust expense categories as needed"
